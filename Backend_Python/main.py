@@ -192,20 +192,36 @@ def landuse_analysis(df: pd.DataFrame) -> pd.DataFrame:
 # ---------------------------
 # Process Pipeline
 # ---------------------------
+# def process_pipeline(file_path: str, selections: List[str], thresholds: dict) -> dict:
+#     df = read_file(file_path)
+#     results = {}
+#     if "AC Interference" in selections:
+#         results["AC Interference"] = ac_interference_analysis(df.copy())
+#     if "ACPSP" in selections:
+#         results["ACPSP"] = acpsp_analysis(df.copy(), thresholds.get("ACPSP", 4))
+#     if "Attenuation" in selections:
+#         results["Attenuation"] = attenuation_analysis(df.copy(), thresholds.get("Attenuation", 2))
+#     if "CPCIPS" in selections:
+#         results["CPCIPS"] = cpcips_analysis(df.copy(), thresholds.get("CPCIPS", -1.0))
+#     if "Landuse" in selections:
+#         results["Landuse"] = landuse_analysis(df.copy())
+#     return results
+
 def process_pipeline(file_path: str, selections: List[str], thresholds: dict) -> dict:
-    df = read_file(file_path)
+    df_original = read_file(file_path)
     results = {}
     if "AC Interference" in selections:
-        results["AC Interference"] = ac_interference_analysis(df.copy())
+        results["AC Interference"] = ac_interference_analysis(df_original)
     if "ACPSP" in selections:
-        results["ACPSP"] = acpsp_analysis(df.copy(), thresholds.get("ACPSP", 4))
+        results["ACPSP"] = acpsp_analysis(df_original, thresholds.get("ACPSP", 4))
     if "Attenuation" in selections:
-        results["Attenuation"] = attenuation_analysis(df.copy(), thresholds.get("Attenuation", 2))
+        results["Attenuation"] = attenuation_analysis(df_original, thresholds.get("Attenuation", 2))
     if "CPCIPS" in selections:
-        results["CPCIPS"] = cpcips_analysis(df.copy(), thresholds.get("CPCIPS", -1.0))
+        results["CPCIPS"] = cpcips_analysis(df_original, thresholds.get("CPCIPS", -1.0))
     if "Landuse" in selections:
-        results["Landuse"] = landuse_analysis(df.copy())
+        results["Landuse"] = landuse_analysis(df_original)
     return results
+
 
 # ---------------------------
 # API Endpoint
@@ -234,4 +250,16 @@ async def process_data(
         for sheet_name, df in results.items():
             df.to_excel(writer, index=False, sheet_name=sheet_name)
 
-    return FileResponse(output_file, filename="Workbook.xlsx")
+    # return FileResponse(output_file, filename="Workbook.xlsx")
+from fastapi.responses import StreamingResponse
+
+def iterfile(file_path):
+    with open(file_path, mode="rb") as file_like:
+        yield from file_like
+
+return StreamingResponse(
+    iterfile(output_file),
+    media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    headers={"Content-Disposition": "attachment; filename=Workbook.xlsx"}
+)
+
