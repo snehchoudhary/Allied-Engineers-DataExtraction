@@ -6,7 +6,7 @@ export const processData = async (file, analyses, thresholds) => {
   formData.append("attenuation_threshold", thresholds.Attenuation || 2);
   formData.append("cpcips_threshold", thresholds.CPCIPS || -1);
 
-  const res = await fetch("http://localhost:8000/process-data/", {
+  const res = await fetch("https://allied-engineers-dataextraction-1.onrender.com", {
     method: "POST",
     body: formData,
   });
