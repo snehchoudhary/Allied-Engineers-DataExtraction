@@ -1,0 +1,45 @@
+.app-header {
+  position: fixed; /* stays at the top */
+  top: 0;
+  left: 0;
+  margin: 0;
+  box-sizing: border-box;
+  padding: 1em;
+  width: 100%;
+  height: 60px;
+  /* background-color: white; or your brand color */
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+  z-index: 1000;
+}
+
+.company-logo {
+  height: 65px; /* small logo */
+  width: auto;
+  object-fit: contain;
+}
+/* Responsive styles for tablets */
+@media (max-width: 768px) {
+  .app-header {
+    height: 50px;
+    padding: 0 8px;
+  }
+
+  .company-logo {
+    height: 30px; /* smaller on tablet */
+  }
+}
+
+/* Responsive styles for mobile */
+@media (max-width: 480px) {
+  .app-header {
+    height: 45px;
+    padding: 0 6px;
+  }
+
+  .company-logo {
+    height: 25px; /* even smaller on mobile */
+  }
+}
